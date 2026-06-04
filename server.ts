@@ -212,7 +212,7 @@ Generate details:
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-1.5-flash",
       contents: "Generate the travel plan JSON as instructed.",
       config: {
         systemInstruction: systemPrompt,
@@ -401,7 +401,11 @@ Generate details:
     res.json({ travelPlan, logs });
   } catch (err: any) {
     console.error("Error generating travel plan:", err);
-    res.status(500).json({ error: err.message || "Failed to generate travel plan." });
+    let errorMsg = err.message || "Failed to generate travel plan.";
+    if (errorMsg.includes("503") || errorMsg.includes("quota") || errorMsg.includes("UNAVAILABLE")) {
+       errorMsg = "The Gemini AI model is currently experiencing high demand or daily quota restrictions. Please wait a moment and try again later.";
+    }
+    res.status(500).json({ error: errorMsg });
   }
 });
 
@@ -461,7 +465,7 @@ ${JSON.stringify(travelPlan, null, 2)}
 
     // Fetch conversation response
     const chatResponse = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-1.5-flash",
       contents: [
         ...formattedHistory,
         {
@@ -662,7 +666,11 @@ ${JSON.stringify(travelPlan, null, 2)}
     res.json(parsedData);
   } catch (err: any) {
     console.error("Error in agent chat assistant:", err);
-    res.status(500).json({ error: err.message || "Failed to converse with travel agents." });
+    let errorMsg = err.message || "Failed to converse with travel agents.";
+    if (errorMsg.includes("503") || errorMsg.includes("quota") || errorMsg.includes("UNAVAILABLE")) {
+       errorMsg = "The Gemini AI model is currently busy or out of quota. Please try your request again later.";
+    }
+    res.status(500).json({ error: errorMsg });
   }
 });
 
