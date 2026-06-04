@@ -246,17 +246,19 @@ Feel free to ask me to make updates, add activities or adjust the flights!`,
     setIsExporting(true);
     try {
       const { default: jsPDF } = await import("jspdf");
-      const { default: html2canvas } = await import("html2canvas");
+      const { toPng } = await import("html-to-image");
       
       const element = document.getElementById("pdf-export-container");
       if (!element) return;
 
-      const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = await toPng(element, { backgroundColor: '#0f172a', pixelRatio: 2, skipFonts: true });
       const pdf = new jsPDF("p", "mm", "a4");
       
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      // Calculate original element dimensions to maintain aspect ratio
+      const rect = element.getBoundingClientRect();
+      const pdfHeight = (rect.height * pdfWidth) / rect.width;
       
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Travel-Plan-${travelPlan?.destination || 'Export'}.pdf`);
