@@ -690,10 +690,7 @@ async function startServer() {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Multi-Agent Travel Planner serving on port ${PORT}`);
-  });
+  export default app;
 }
 
 startServer();
