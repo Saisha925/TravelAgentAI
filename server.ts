@@ -212,7 +212,7 @@ Generate details:
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       contents: "Generate the travel plan JSON as instructed.",
       config: {
         systemInstruction: systemPrompt,
@@ -465,7 +465,7 @@ ${JSON.stringify(travelPlan, null, 2)}
 
     // Fetch conversation response
     const chatResponse = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       contents: [
         ...formattedHistory,
         {
