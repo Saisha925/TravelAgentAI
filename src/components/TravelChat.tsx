@@ -41,7 +41,7 @@ export default function TravelChat({ messages, onSendMessage, isChatting }: Trav
     <div className="glass-panel rounded-2xl p-5 flex flex-col h-[520px] relative overflow-hidden">
       {/* Chat header */}
       <div className="flex items-center gap-2.5 pb-4 border-b border-white/10 flex-none relative z-10">
-        <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl text-white shadow-lg border border-white/10">
+        <div className="p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl text-white shadow-lg border border-white/10">
           <MessageCircle className="h-5 w-5" />
         </div>
         <div>
@@ -65,7 +65,7 @@ export default function TravelChat({ messages, onSendMessage, isChatting }: Trav
               <div
                 className={`flex-none h-8 w-8 rounded-full flex items-center justify-center text-xs font-semibold ${
                   isAI
-                    ? "bg-white/10 border border-white/15 text-blue-400"
+                    ? "bg-white/10 border border-white/15 text-purple-400"
                     : "bg-white/5 border border-white/10 text-slate-300"
                 }`}
               >
@@ -76,7 +76,7 @@ export default function TravelChat({ messages, onSendMessage, isChatting }: Trav
                 className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                   isAI
                     ? "bg-white/5 border border-white/10 text-slate-200 rounded-tl-none font-normal"
-                    : "bg-blue-600/80 border border-blue-500/50 text-white rounded-tr-none font-medium shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                    : "bg-purple-600/80 border border-purple-500/50 text-white rounded-tr-none font-medium shadow-[0_0_15px_rgba(168,85,247,0.15)]"
                 }`}
               >
                 <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -90,19 +90,19 @@ export default function TravelChat({ messages, onSendMessage, isChatting }: Trav
  
         {isChatting && (
           <div className="flex gap-3 max-w-[85%]">
-            <div className="flex-none h-8 w-8 rounded-full bg-white/10 border border-white/15 text-blue-400 flex items-center justify-center">
+            <div className="flex-none h-8 w-8 rounded-full bg-white/10 border border-white/15 text-purple-400 flex items-center justify-center">
               <Cpu className="h-4 w-4 animate-spin" />
             </div>
             <div className="bg-white/5 border border-white/10 p-3.5 rounded-2xl rounded-tl-none space-y-2">
               <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-semibold animate-pulse">
-                <RefreshCw className="h-3 w-3 animate-spin text-blue-400" />
+                <RefreshCw className="h-3 w-3 animate-spin text-purple-400" />
                 <span>Planner Agent deliberating with Flight, Hotel &amp; Weather Agents...</span>
               </div>
               {/* Animated Typing Dots */}
               <div className="flex gap-1 items-center py-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+                <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function TravelChat({ messages, onSendMessage, isChatting }: Trav
               type="button"
               disabled={isChatting}
               onClick={() => handleQuickPrompt(prompt)}
-              className="px-2.5 py-1 text-[10px] font-medium border border-white/10 bg-white/5 text-slate-300 hover:border-blue-400 hover:text-white cursor-pointer rounded-lg transition-all disabled:opacity-50"
+              className="px-2.5 py-1 text-[10px] font-medium border border-white/10 bg-white/5 text-slate-300 hover:border-purple-400 hover:text-white cursor-pointer rounded-lg transition-all disabled:opacity-50"
             >
               {prompt}
             </button>

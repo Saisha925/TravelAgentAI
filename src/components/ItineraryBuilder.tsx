@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ItineraryDay, ItineraryActivity, TravelPlan } from "../types";
 import { Calendar, Clock, MapPin, DollarSign, Plus, Trash, Edit3, Compass, Map, ExternalLink } from "lucide-react";
+import MapVisualization from "./MapVisualization";
 
 const CATEGORIES: ItineraryActivity["category"][] = [
   "Transport",
@@ -213,11 +214,11 @@ export default function ItineraryBuilder({ plan, onUpdatePlan }: ItineraryBuilde
                 onClick={() => setActiveDayIndex(idx)}
                 className={`flex-none px-4 py-3 rounded-xl border text-left transition-all cursor-pointer ${
                   activeDayIndex === idx
-                    ? "border-blue-500 bg-blue-500/10 ring-1 ring-blue-500/30 text-white shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                    ? "border-purple-500 bg-purple-500/10 ring-1 ring-purple-500/30 text-white shadow-[0_0_15px_rgba(168,85,247,0.15)]"
                     : "bg-white/5 text-slate-300 border-white/5 hover:border-white/15 hover:bg-white/10"
                 }`}
               >
-                <div className="text-[10px] uppercase font-bold tracking-wider opacity-75 text-blue-300">Day {day.dayNumber}</div>
+                <div className="text-[10px] uppercase font-bold tracking-wider opacity-75 text-purple-300">Day {day.dayNumber}</div>
                 <div className="text-xs font-semibold mt-0.5 text-white">{day.date}</div>
               </button>
             ))}
@@ -234,7 +235,7 @@ export default function ItineraryBuilder({ plan, onUpdatePlan }: ItineraryBuilde
                 <button
                   type="button"
                   onClick={() => handleOpenAdd(activeDay.dayNumber)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/25 rounded-lg text-xs font-semibold transition cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-pink-400 bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/25 rounded-lg text-xs font-semibold transition cursor-pointer"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add Activity</span>
@@ -270,7 +271,7 @@ export default function ItineraryBuilder({ plan, onUpdatePlan }: ItineraryBuilde
                     return (
                       <div key={act.id} className="relative pl-9 group">
                         {/* Bullet index node */}
-                        <div className="absolute left-[8px] top-1.5 h-[16px] w-[16px] rounded-full border-2 border-blue-500 bg-slate-900 ring-2 ring-blue-500/30 shadow flex items-center justify-center z-10 transition group-hover:scale-110" />
+                        <div className="absolute left-[8px] top-1.5 h-[16px] w-[16px] rounded-full border-2 border-purple-500 bg-slate-900 ring-2 ring-purple-500/30 shadow flex items-center justify-center z-10 transition group-hover:scale-110" />
 
                         <div className="border border-white/5 hover:border-white/15 bg-white/5 hover:bg-white/10 rounded-xl p-4 transition-all flex flex-col md:flex-row justify-between gap-4">
                           <div className="space-y-1.5 flex-1">
@@ -328,74 +329,31 @@ export default function ItineraryBuilder({ plan, onUpdatePlan }: ItineraryBuilde
             <div className="flex justify-between items-center mb-3">
               <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
                 <Map className="h-4 w-4 text-slate-400" />
-                <span>Simulated Routing Grid</span>
+                <span>Computed Routing Map</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-400">Day {activeDay?.dayNumber || 1} Mappings</span>
+              <span className="text-[10px] font-mono text-slate-400">Day {activeDay?.dayNumber || 1} Map</span>
             </div>
 
-            {/* Simulated Vector Graph Canvas Map */}
-            <div className="relative bg-slate-950 overflow-hidden border border-white/10 rounded-xl flex-1 flex items-center justify-center min-h-[250px] shadow-inner">
-              {/* Interactive background design simulation */}
-              <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 opacity-5 pointer-events-none">
-                {Array.from({ length: 64 }).map((_, i) => (
-                  <div key={i} className="border-r border-b border-white" />
-                ))}
-              </div>
-
-              {/* Mapped locations connected with an SVG coordinate chain */}
-              {currentActivities.length > 0 && (
-                <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                  {/* Drawing connecting path */}
-                  <polyline
-                    points={currentActivities.map((act) => `${act.coords.x}%,${act.coords.y}%`).join(" ")}
-                    fill="none"
-                    stroke="#3b82f6"
-                    strokeWidth="2"
-                    strokeDasharray="4 4"
-                    className="opacity-70 animate-pulse"
-                  />
-                </svg>
-              )}
-
-              {/* Absolute Positioning of nodes */}
-              {currentActivities.map((act, index) => (
-                <div
-                  key={act.id}
-                  className="absolute cursor-pointer group/node"
-                  style={{ left: `${act.coords.x}%`, top: `${act.coords.y}%` }}
-                >
-                  <div className="relative -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                    {/* Ring indicator */}
-                    <div className="h-5 w-5 rounded-full bg-blue-600 text-[10px] text-white flex items-center justify-center font-bold ring-4 ring-slate-950 border border-blue-450">
-                      {index + 1}
-                    </div>
-
-                    {/* Popover Hover tooltip */}
-                    <div className="absolute bottom-6 scale-0 group-hover/node:scale-100 bg-slate-900/95 text-white border border-slate-700/60 rounded px-2 py-1 text-[10px] whitespace-nowrap transition-all duration-150 z-20 shadow-md">
-                      <span className="font-semibold">{act.title}</span>
-                      <span className="text-slate-300 block text-[9px]">{act.time}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {currentActivities.length === 0 && (
-                <div className="text-center p-4">
-                  <Compass className="h-8 w-8 text-slate-500 mx-auto animate-spin-slow mb-2" />
-                  <p className="text-slate-500 text-xs">Awaiting activity coords inputs...</p>
-                </div>
-              )}
-            </div>
+            {/* Google Map Visualization */}
+             <MapVisualization 
+              destination={plan.destination} 
+              activities={currentActivities} 
+              hotel={plan.selectedHotel} 
+             />
 
             {/* Map Legend */}
-            <div className="mt-3 bg-white/5 p-3 rounded-xl border border-white/10 text-[11px] text-slate-400 space-y-1.5">
+            <div className="mt-3 bg-white/5 p-3 rounded-xl border border-white/10 text-[11px] text-slate-400 flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+                <span className="h-4 w-4 rounded-lg bg-pink-600 border border-pink-400 flex items-center justify-center text-white text-[8px] font-bold">H</span>
+                <span>Selected Accommodation</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-4 w-4 rounded-full bg-purple-600 border border-purple-400 flex items-center justify-center text-white text-[8px] font-bold">1</span>
                 <span>Sequence numbering represents task timeline path.</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="h-[2px] w-4 border-t-2 border-dashed border-blue-500" />
-                <span>Dotted lines correlate to computed optimal flight / walking routes.</span>
+                <span className="h-[2px] w-4 border-t-2 border-dashed border-purple-500" />
+                <span>Computed driving routes between locations.</span>
               </div>
             </div>
           </div>

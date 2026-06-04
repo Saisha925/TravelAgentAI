@@ -58,9 +58,9 @@ export default function AgentConsole({ logs, isGenerating }: AgentConsoleProps) 
   const getAgentTheme = (agent: string) => {
     switch (agent) {
       case "Itinerary Planner Agent":
-        return { bg: "bg-indigo-600/10 text-indigo-400 border-indigo-500/20", icon: <Cpu className="h-4.5 w-4.5" /> };
+        return { bg: "bg-purple-600/10 text-purple-400 border-purple-500/20", icon: <Cpu className="h-4.5 w-4.5" /> };
       case "Flight Search Agent":
-        return { bg: "bg-sky-600/10 text-sky-400 border-sky-500/20", icon: <Terminal className="h-4.5 w-4.5" /> };
+        return { bg: "bg-pink-600/10 text-pink-400 border-pink-500/20", icon: <Terminal className="h-4.5 w-4.5" /> };
       case "Hotel Recommendation Agent":
         return { bg: "bg-teal-600/10 text-teal-400 border-teal-500/20", icon: <Database className="h-4.5 w-4.5" /> };
       case "Weather Information Agent":
@@ -212,11 +212,11 @@ export default function AgentConsole({ logs, isGenerating }: AgentConsoleProps) 
       <div className="bg-white/5 px-5 py-3.5 border-t border-white/10 text-[10px] text-slate-400 flex flex-wrap gap-4 items-center font-sans tracking-wide">
         <span className="font-semibold text-slate-300 uppercase tracking-widest text-[9px]">Swarms &amp; MCPs:</span>
         <div className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-indigo-500" />
+          <span className="h-2 w-2 rounded-full bg-purple-500" />
           <span>Itinerary Sup.</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-sky-400" />
+          <span className="h-2.5 w-2.5 rounded-full bg-pink-400" />
           <span>Flights Ag.</span>
         </div>
         <div className="flex items-center gap-1.5">

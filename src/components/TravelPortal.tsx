@@ -176,12 +176,12 @@ export default function TravelPortal({ onGenerate, isLoading }: TravelPortalProp
                 onClick={() => setTravelStyle(style.name)}
                 className={`flex flex-col text-left p-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
                   travelStyle === style.name
-                    ? "border-blue-500 bg-blue-500/10 ring-1 ring-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.15)]"
+                    ? "border-purple-500 bg-purple-500/10 ring-1 ring-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]"
                     : "border-white/5 bg-white/5 hover:border-white/10 hover:bg-white/10"
                 }`}
               >
                 <span className="text-xl mb-1">{style.icon}</span>
-                <span className={`text-xs font-bold ${travelStyle === style.name ? "text-blue-400" : "text-slate-200"}`}>{style.name}</span>
+                <span className={`text-xs font-bold ${travelStyle === style.name ? "text-purple-400" : "text-slate-200"}`}>{style.name}</span>
                 <span className="text-[10px] text-slate-400 mt-1 leading-normal line-clamp-2">{style.desc}</span>
               </button>
             ))}
@@ -201,7 +201,7 @@ export default function TravelPortal({ onGenerate, isLoading }: TravelPortalProp
                   onClick={() => toggleInterest(item)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border ${
                     isSelected
-                      ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/25"
+                      ? "bg-pink-600 border-pink-500 text-white shadow-lg shadow-pink-500/25"
                       : "bg-white/5 hover:bg-white/10 text-slate-300 border-white/5 hover:border-white/10"
                   }`}
                 >

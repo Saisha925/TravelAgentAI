@@ -243,8 +243,8 @@ export default function ExpenseDashboard({ plan, onUpdatePlan }: ExpenseDashboar
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <div className="h-40 w-40 shrink-0">
-                    <ResponsiveContainer width="100%" height="100%">
+                  <div className="h-40 w-40 shrink-0 min-h-[160px]">
+                    <ResponsiveContainer width="100%" height="100%" minHeight={160}>
                       <PieChart>
                         <Pie
                           data={pieData}
@@ -281,8 +281,8 @@ export default function ExpenseDashboard({ plan, onUpdatePlan }: ExpenseDashboar
             {/* Area Chart: Spending trend over days */}
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-white">Cumulative Expense Accrual</h4>
-              <div className="h-44 w-full">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="h-44 w-full min-h-[176px]">
+                <ResponsiveContainer width="100%" height="100%" minHeight={176}>
                   <AreaChart data={trendData}>
                     <defs>
                       <linearGradient id="colorCum" x1="0" y1="0" x2="0" y2="1">

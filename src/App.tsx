@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TravelPortal from "./components/TravelPortal";
 import ItineraryBuilder from "./components/ItineraryBuilder";
 import ExpenseDashboard from "./components/ExpenseDashboard";
+import WeatherDashboard from "./components/WeatherDashboard";
 import AgentConsole from "./components/AgentConsole";
 import TravelChat from "./components/TravelChat";
 import { TravelPlan, AgentLog, ChatMessage, Flight, Hotel } from "./types";
@@ -20,7 +21,11 @@ import {
   Building2,
   Sparkles,
   RefreshCw,
+  Download,
+  Loader2
 } from "lucide-react";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import { API_KEY } from "./lib/maps";
 
 export default function App() {
   const [travelPlan, setTravelPlan] = useState<TravelPlan | null>(null);
@@ -28,10 +33,11 @@ export default function App() {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isChatting, setIsChatting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Layout tabs
-  const [mainTab, setMainTab] = useState<"itinerary" | "expenses" | "stays">("itinerary");
+  const [mainTab, setMainTab] = useState<"itinerary" | "expenses" | "stays" | "weather">("itinerary");
   const [sidebarTab, setSidebarTab] = useState<"chat" | "console">("chat");
 
   // Onboarding generation
@@ -236,290 +242,357 @@ Feel free to ask me to make updates, add activities or adjust the flights!`,
     setTravelPlan(updated);
   };
 
-  return (
-    <div className="min-h-screen text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 antialiased relative overflow-x-hidden">
-      {/* Background Orbs */}
-      <div className="glow-orb top-[10%] left-[5%] bg-blue-500/10"></div>
-      <div className="glow-orb bottom-[10%] right-[5%] bg-purple-500/10"></div>
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: html2canvas } = await import("html2canvas");
+      
+      const element = document.getElementById("pdf-export-container");
+      if (!element) return;
 
-      {/* Visual Navigation Header */}
-      <header className="bg-slate-950/40 border-b border-white/10 flex-none sticky top-0 z-40 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 border border-white/10">
-              <Compass className="h-5.5 w-5.5 animate-spin-slow text-indigo-100" />
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Travel-Plan-${travelPlan?.destination || 'Export'}.pdf`);
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg("Failed to export PDF: " + err.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  return (
+    <APIProvider apiKey={API_KEY} version="weekly">
+      <div className="min-h-screen text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 antialiased relative overflow-x-hidden">
+        {/* Background Orbs */}
+        <div className="glow-orb top-[5%] left-[2%] bg-blue-500/15"></div>
+        <div className="glow-orb top-[40%] right-[5%] bg-pink-500/15"></div>
+        <div className="glow-orb bottom-[10%] left-[10%] bg-purple-500/15"></div>
+
+        {/* Visual Navigation Header */}
+        <header className="bg-slate-950/40 border-b border-white/10 flex-none sticky top-0 z-40 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg border border-white/10">
+                <Compass className="h-5.5 w-5.5 animate-spin-slow text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                  <span>Multi-Agent Travel Planner</span>
+                  <span className="hidden sm:inline-block text-[10px] font-bold tracking-widest px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-blue-400 uppercase">
+                    ADK Core v3
+                  </span>
+                </h1>
+                <p className="text-xs text-slate-400 font-medium">Flight, Hotel &amp; Optimal Routing Swarms</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-                <span>Multi-Agent Travel Planner</span>
-                <span className="hidden sm:inline-block text-[10px] font-bold tracking-widest px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-blue-400 uppercase">
-                  ADK Core v3
-                </span>
-              </h1>
-              <p className="text-xs text-slate-400 font-medium">Flight, Hotel &amp; Optimal Routing Swarms</p>
-            </div>
+
+            {travelPlan && (
+              <button
+                onClick={() => {
+                  setTravelPlan(null);
+                  setLogs([]);
+                  setChatHistory([]);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 glass-btn-secondary text-xs font-semibold rounded-lg transition"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span>Back to parameters</span>
+              </button>
+            )}
           </div>
+        </header>
+
+        {/* Main Container */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 py-8 relative z-10">
+          {/* Error Alert Box */}
+          {errorMsg && (
+            <div className="mb-6 bg-red-950/20 border border-red-500/30 text-red-200 p-5 rounded-2xl flex items-start gap-3.5 shadow-2xl backdrop-blur-md animate-in fade-in duration-200">
+              <Info className="h-5.5 w-5.5 text-red-400 flex-none mt-0.5" />
+              <div className="space-y-1">
+                <h4 className="font-semibold text-sm">System Conflict Encountered</h4>
+                <p className="text-xs leading-relaxed text-slate-300">{errorMsg}</p>
+              </div>
+            </div>
+          )}
+
+          {!travelPlan && (
+            <div className="max-w-4xl mx-auto space-y-6">
+              <TravelPortal onGenerate={handleGeneratePlan} isLoading={isGenerating} />
+
+              {/* Simulated Architecture guidelines cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                <div className="glass-panel p-5 rounded-2xl space-y-2">
+                  <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
+                    <Plane className="h-4.5 w-4.5 rotate-45" />
+                  </div>
+                  <h4 className="font-semibold text-xs text-white">Flight &amp; Hotel Swarms</h4>
+                  <p className="text-slate-400 text-[10px] leading-relaxed">
+                    Subordinate agents retrieve details from Travel API MCP tools matching travel budgets.
+                  </p>
+                </div>
+
+                <div className="glass-panel p-5 rounded-2xl space-y-2">
+                  <div className="h-8 w-8 rounded-lg bg-pink-500/10 text-pink-400 flex items-center justify-center border border-pink-500/20">
+                    <Cloud className="h-4.5 w-4.5" />
+                  </div>
+                  <h4 className="font-semibold text-xs text-white">Climate Suitability Grid</h4>
+                  <p className="text-slate-400 text-[10px] leading-relaxed">
+                    Weather Information Agent assesses trends from Weather MCP forecasts to layout schedule parameters.
+                  </p>
+                </div>
+
+                <div className="glass-panel p-5 rounded-2xl space-y-2">
+                  <div className="h-8 w-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
+                    <Compass className="h-4.5 w-4.5 animate-spin-slow" />
+                  </div>
+                  <h4 className="font-semibold text-xs text-white">Vector Landmarks Map</h4>
+                  <p className="text-slate-400 text-[10px] leading-relaxed">
+                    Maps MCP optimizes relative coordinate geometries to order walking routes sequence.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {travelPlan && (
-            <button
-              onClick={() => {
-                setTravelPlan(null);
-                setLogs([]);
-                setChatHistory([]);
-              }}
-              className="flex items-center gap-1.5 px-3.5 py-2 glass-btn-secondary text-xs font-semibold rounded-lg transition"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span>Back to parameters</span>
-            </button>
-          )}
-        </div>
-      </header>
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8 items-start">
+              {/* LEFT TOOLBAR / SIDEBAR */}
+              <div className="xl:col-span-2 space-y-4 xl:sticky xl:top-[88px] z-10 w-full flex overflow-x-auto xl:flex-col pb-2 xl:pb-0 scrollbar-none">
+                <div className="glass-panel p-3 xl:p-4 rounded-2xl flex xl:flex-col gap-2 min-w-max xl:min-w-0 shadow-lg">
+                  <h3 className="hidden xl:block text-slate-400 font-bold text-[10px] uppercase tracking-widest pl-2 pt-1 pb-1">Features</h3>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setMainTab("itinerary")}
+                    className={`flex items-center gap-2 text-left px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                      mainTab === "itinerary" ? "bg-white/15 text-white shadow-sm ring-1 ring-white/10" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <Calendar className="h-4 w-4 shrink-0" />
+                    <span>Itinerary</span>
+                  </button>
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 py-8 relative z-10">
-        {/* Error Alert Box */}
-        {errorMsg && (
-          <div className="mb-6 bg-red-950/20 border border-red-500/30 text-red-200 p-5 rounded-2xl flex items-start gap-3.5 shadow-2xl backdrop-blur-md animate-in fade-in duration-200">
-            <Info className="h-5.5 w-5.5 text-red-400 flex-none mt-0.5" />
-            <div className="space-y-1">
-              <h4 className="font-semibold text-sm">System Conflict Encountered</h4>
-              <p className="text-xs leading-relaxed text-slate-300">{errorMsg}</p>
-            </div>
-          </div>
-        )}
+                  <button
+                    type="button"
+                    onClick={() => setMainTab("weather")}
+                    className={`flex items-center gap-2 text-left px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                      mainTab === "weather" ? "bg-white/15 text-white shadow-sm ring-1 ring-white/10" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <Cloud className="h-4 w-4 shrink-0" />
+                    <span>Weather</span>
+                  </button>
 
-        {!travelPlan && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            <TravelPortal onGenerate={handleGeneratePlan} isLoading={isGenerating} />
+                  <button
+                    type="button"
+                    onClick={() => setMainTab("stays")}
+                    className={`flex items-center gap-2 text-left px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                      mainTab === "stays" ? "bg-white/15 text-white shadow-sm ring-1 ring-white/10" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <Plane className="h-4 w-4 shrink-0" />
+                    <span>Stays &amp; Flights</span>
+                  </button>
 
-            {/* Simulated Architecture guidelines cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              <div className="glass-panel p-5 rounded-2xl space-y-2">
-                <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
-                  <Plane className="h-4.5 w-4.5 rotate-45" />
+                  <button
+                    type="button"
+                    onClick={() => setMainTab("expenses")}
+                    className={`flex items-center gap-2 text-left px-3.5 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                      mainTab === "expenses" ? "bg-white/15 text-white shadow-sm ring-1 ring-white/10" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <DollarSign className="h-4 w-4 shrink-0" />
+                    <span>Expenses</span>
+                  </button>
+
+                  <div className="hidden xl:block my-2 border-t border-white/5" />
+
+                  <button
+                    onClick={handleExportPDF}
+                    disabled={isExporting}
+                    className="flex items-center gap-2 px-3.5 py-2.5 text-xs font-bold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-xl transition-all disabled:opacity-50"
+                  >
+                    {isExporting ? <Loader2 className="h-4 w-4 animate-spin shrink-0" /> : <Download className="h-4 w-4 shrink-0" />}
+                    <span>{isExporting ? "Exporting..." : "Export PDF"}</span>
+                  </button>
                 </div>
-                <h4 className="font-semibold text-xs text-white">Flight &amp; Hotel Swarms</h4>
-                <p className="text-slate-400 text-[10px] leading-relaxed">
-                  Subordinate agents retrieve details from Travel API MCP tools matching travel budgets.
-                </p>
               </div>
 
-              <div className="glass-panel p-5 rounded-2xl space-y-2">
-                <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
-                  <Cloud className="h-4.5 w-4.5" />
-                </div>
-                <h4 className="font-semibold text-xs text-white">Climate Suitability Grid</h4>
-                <p className="text-slate-400 text-[10px] leading-relaxed">
-                  Weather Information Agent assesses trends from Weather MCP forecasts to layout schedule parameters.
-                </p>
-              </div>
+              {/* CENTER MAIN WORKSPACE */}
+              <div id="pdf-export-container" className="xl:col-span-7 space-y-6 bg-transparent border-none rounded-none p-0 overflow-visible min-w-0">
+                {mainTab === "itinerary" && (
+                  <ItineraryBuilder plan={travelPlan} onUpdatePlan={handleUpdatePlan} />
+                )}
 
-              <div className="glass-panel p-5 rounded-2xl space-y-2">
-                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
-                  <Compass className="h-4.5 w-4.5 animate-spin-slow" />
-                </div>
-                <h4 className="font-semibold text-xs text-white">Vector Landmarks Map</h4>
-                <p className="text-slate-400 text-[10px] leading-relaxed">
-                  Maps MCP optimizes relative coordinate geometries to order walking routes sequence.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+                {mainTab === "weather" && (
+                  <WeatherDashboard plan={travelPlan} />
+                )}
 
-        {travelPlan && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left Main Workspace Tab sections */}
-            <div className="lg:col-span-8 space-y-6">
-              {/* Tabs list bar */}
-              <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-2xl gap-2 overflow-x-auto">
-                <button
-                  type="button"
-                  onClick={() => setMainTab("itinerary")}
-                  className={`flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                    mainTab === "itinerary" ? "bg-white/15 text-white border border-white/20 shadow-md" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
-                  }`}
-                >
-                  Itinerary Planner
-                </button>
+                {mainTab === "expenses" && (
+                  <ExpenseDashboard plan={travelPlan} onUpdatePlan={handleUpdatePlan} />
+                )}
 
-                <button
-                  type="button"
-                  onClick={() => setMainTab("stays")}
-                  className={`flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                    mainTab === "stays" ? "bg-white/15 text-white border border-white/20 shadow-md" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
-                  }`}
-                >
-                  Flights &amp; Hotels
-                </button>
+                {mainTab === "stays" && (
+                  <div className="space-y-6 animate-in fade-in duration-150">
+                    {/* Flight Recommendations Selector */}
+                    <div className="glass-panel rounded-2xl p-6 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
+                          <Plane className="h-4.5 w-4.5 rotate-45 text-blue-400" />
+                          <span>Collaborative Flight Options</span>
+                        </h3>
+                        <p className="text-slate-400 text-xs mt-1">
+                          Discovered by Flight Search Agent from Travel MCP Server limits. Select another option to update schedules.
+                        </p>
+                      </div>
 
-                <button
-                  type="button"
-                  onClick={() => setMainTab("expenses")}
-                  className={`flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
-                    mainTab === "expenses" ? "bg-white/15 text-white border border-white/20 shadow-md" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
-                  }`}
-                >
-                  Expense Dashboard
-                </button>
-              </div>
-
-              {/* Render Selected View */}
-              {mainTab === "itinerary" && (
-                <ItineraryBuilder plan={travelPlan} onUpdatePlan={handleUpdatePlan} />
-              )}
-
-              {mainTab === "expenses" && (
-                <ExpenseDashboard plan={travelPlan} onUpdatePlan={handleUpdatePlan} />
-              )}
-
-              {mainTab === "stays" && (
-                <div className="space-y-6 animate-in fade-in duration-150">
-                  {/* Flight Recommendations Selector */}
-                  <div className="glass-panel rounded-2xl p-6 space-y-4">
-                    <div>
-                      <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
-                        <Plane className="h-4.5 w-4.5 rotate-45 text-blue-400" />
-                        <span>Collaborative Flight Options</span>
-                      </h3>
-                      <p className="text-slate-400 text-xs mt-1">
-                        Discovered by Flight Search Agent from Travel MCP Server limits. Select another option to update schedules.
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {travelPlan.flights.map((flight) => {
-                        const isSelected = travelPlan.selectedFlight?.id === flight.id;
-                        return (
-                          <div
-                            key={flight.id}
-                            onClick={() => handleSelectFlight(flight)}
-                            className={`border rounded-xl p-4 cursor-pointer transition-all flex flex-col justify-between ${
-                              isSelected
-                                ? "bg-blue-500/10 border-blue-500 ring-1 ring-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
-                                : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/25"
-                            }`}
-                          >
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-center">
-                                <span className="font-bold text-xs text-slate-100">{flight.airline}</span>
-                                <span className="text-[10px] font-mono text-slate-400">{flight.flightNumber}</span>
-                              </div>
-                              <div className="text-xs text-slate-300 font-medium space-y-1">
-                                <div className="flex justify-between">
-                                  <span>Dep: {flight.departureTime}</span>
-                                  <span>{flight.stops === 0 ? "Nonstop" : `${flight.stops} stop`}</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-2 gap-4">
+                        {travelPlan.flights.map((flight) => {
+                          const isSelected = travelPlan.selectedFlight?.id === flight.id;
+                          return (
+                            <div
+                              key={flight.id}
+                              onClick={() => handleSelectFlight(flight)}
+                              className={`border rounded-xl p-4 cursor-pointer transition-all flex flex-col justify-between ${
+                                isSelected
+                                  ? "bg-blue-500/10 border-blue-500 ring-1 ring-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+                                  : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/25"
+                              }`}
+                            >
+                              <div className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                  <span className="font-bold text-xs text-slate-100">{flight.airline}</span>
+                                  <span className="text-[10px] font-mono text-slate-400">{flight.flightNumber}</span>
                                 </div>
-                                <div className="text-[11px] text-slate-400">Duration: {flight.duration}</div>
+                                <div className="text-xs text-slate-300 font-medium space-y-1">
+                                  <div className="flex justify-between">
+                                    <span>Dep: {flight.departureTime}</span>
+                                    <span>{flight.stops === 0 ? "Nonstop" : `${flight.stops} stop`}</span>
+                                  </div>
+                                  <div className="text-[11px] text-slate-400">Duration: {flight.duration}</div>
+                                </div>
+                              </div>
+                              <div className="border-t border-white/10 mt-3 pt-2.5 flex justify-between items-center text-xs font-semibold">
+                                <span className="text-slate-400">{flight.origin} → {flight.destination}</span>
+                                <span className="text-blue-400 font-bold">${flight.price} USD</span>
                               </div>
                             </div>
-                            <div className="border-t border-white/10 mt-3 pt-2.5 flex justify-between items-center text-xs font-semibold">
-                              <span className="text-slate-400">{flight.origin} → {flight.destination}</span>
-                              <span className="text-blue-400 font-bold">${flight.price} USD</span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Hotel recommendations Selector */}
-                  <div className="glass-panel rounded-2xl p-6 space-y-4">
-                    <div>
-                      <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
-                        <Building2 className="h-4.5 w-4.5 text-purple-400" />
-                        <span>Sourced Lodging Proposals</span>
-                      </h3>
-                      <p className="text-slate-400 text-xs mt-1">
-                        Cataloged by Hotel Agent matched against rating clusters. Overrides automatically re-budget lodging metrics.
-                      </p>
+                          );
+                        })}
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {travelPlan.hotels.map((hotel) => {
-                        const isSelected = travelPlan.selectedHotel?.id === hotel.id;
-                        return (
-                          <div
-                            key={hotel.id}
-                            onClick={() => handleSelectHotel(hotel)}
-                            className={`border rounded-xl p-4 cursor-pointer transition-all flex flex-col justify-between ${
-                              isSelected
-                                ? "bg-purple-500/10 border-purple-500 ring-1 ring-purple-500 shadow-[0_0_15px_rgba(139,92,246,0.25)]"
-                                : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/25"
-                            }`}
-                          >
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-start gap-1">
-                                <span className="font-bold text-xs text-white line-clamp-1">{hotel.name}</span>
-                                <span className="text-[10px] font-bold text-amber-400 flex items-center gap-0.5 shrink-0">
-                                  <Star className="h-3 w-3 fill-amber-400" /> {hotel.rating}
-                                </span>
-                              </div>
-                              <p className="text-[11px] text-slate-400 leading-normal line-clamp-2">{hotel.address}</p>
-                              <p className="text-[11px] text-slate-300 font-normal leading-relaxed line-clamp-2 pt-1">{hotel.description}</p>
-                              <div className="flex flex-wrap gap-1 pt-1.5">
-                                {hotel.amenities.map((am) => (
-                                  <span key={am} className="text-[9px] font-semibold text-slate-300 px-1.5 py-0.5 rounded bg-white/5 border border-white/10">
-                                    {am}
+                    {/* Hotel recommendations Selector */}
+                    <div className="glass-panel rounded-2xl p-6 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
+                          <Building2 className="h-4.5 w-4.5 text-purple-400" />
+                          <span>Sourced Lodging Proposals</span>
+                        </h3>
+                        <p className="text-slate-400 text-xs mt-1">
+                          Cataloged by Hotel Agent matched against rating clusters. Overrides automatically re-budget lodging metrics.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-2 gap-4">
+                        {travelPlan.hotels.map((hotel) => {
+                          const isSelected = travelPlan.selectedHotel?.id === hotel.id;
+                          return (
+                            <div
+                              key={hotel.id}
+                              onClick={() => handleSelectHotel(hotel)}
+                              className={`border rounded-xl p-4 cursor-pointer transition-all flex flex-col justify-between ${
+                                isSelected
+                                  ? "bg-purple-500/10 border-purple-500 ring-1 ring-purple-500 shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+                                  : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/25"
+                              }`}
+                            >
+                              <div className="space-y-2">
+                                <div className="flex justify-between items-start gap-1">
+                                  <span className="font-bold text-xs text-white line-clamp-1">{hotel.name}</span>
+                                  <span className="text-[10px] font-bold text-amber-400 flex items-center gap-0.5 shrink-0">
+                                    <Star className="h-3 w-3 fill-amber-400" /> {hotel.rating}
                                   </span>
-                                ))}
+                                </div>
+                                <p className="text-[11px] text-slate-400 leading-normal line-clamp-2">{hotel.address}</p>
+                                <p className="text-[11px] text-slate-300 font-normal leading-relaxed line-clamp-2 pt-1">{hotel.description}</p>
+                                <div className="flex flex-wrap gap-1 pt-1.5">
+                                  {hotel.amenities.map((am) => (
+                                    <span key={am} className="text-[9px] font-semibold text-slate-300 px-1.5 py-0.5 rounded bg-white/5 border border-white/10">
+                                      {am}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="border-t border-white/10 mt-3 pt-2.5 flex justify-between items-center text-xs font-bold leading-none">
+                                <span className="text-slate-400">Nightly rate:</span>
+                                <span className="text-purple-400 font-bold">${hotel.pricePerNight} USD</span>
                               </div>
                             </div>
-                            <div className="border-t border-white/10 mt-3 pt-2.5 flex justify-between items-center text-xs font-bold leading-none">
-                              <span className="text-slate-400">Nightly rate:</span>
-                              <span className="text-purple-400 font-bold">${hotel.pricePerNight} USD</span>
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* Right Assistant Workspace Panel section */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Right Tab controls */}
-              <div className="flex bg-white/5 border border-white/10 p-1 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setSidebarTab("chat")}
-                  className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    sidebarTab === "chat"
-                      ? "bg-white/15 text-white border border-white/20 shadow-sm"
-                      : "text-slate-400 hover:text-slate-200"
-                  }`}
-                >
-                  Planner Chat
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSidebarTab("console")}
-                  className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    sidebarTab === "console"
-                      ? "bg-white/15 text-white border border-white/20 shadow-sm"
-                      : "text-slate-400 hover:text-slate-200"
-                  }`}
-                >
-                  ADK Agent Console
-                </button>
+                )}
               </div>
 
-              {sidebarTab === "chat" ? (
-                <TravelChat
-                  messages={chatHistory}
-                  onSendMessage={handleSendMessage}
-                  isChatting={isChatting}
-                />
-              ) : (
-                <AgentConsole logs={logs} isGenerating={isGenerating} />
-              )}
+              {/* RIGHT AGENT ASSISTANT */}
+              <div className="xl:col-span-3 space-y-4 xl:sticky xl:top-[88px] z-10 w-full min-w-0 max-h-[85vh] flex flex-col">
+                {/* Right Tab controls */}
+                <div className="flex bg-white/5 border border-white/10 p-1.5 rounded-2xl shadow-lg shrink-0 w-full">
+                  <button
+                    type="button"
+                    onClick={() => setSidebarTab("chat")}
+                    className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                      sidebarTab === "chat"
+                        ? "bg-white/15 text-white border border-white/20 shadow-sm"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    Planner Chat
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSidebarTab("console")}
+                    className={`flex-1 text-center py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                      sidebarTab === "console"
+                        ? "bg-white/15 text-white border border-white/20 shadow-sm"
+                        : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    ADK Agent Console
+                  </button>
+                </div>
+
+                <div className="flex-1 w-full bg-slate-950/20 border border-white/10 rounded-2xl overflow-hidden shadow-lg relative min-h-[500px]">
+                  {sidebarTab === "chat" ? (
+                    <div className="absolute inset-0">
+                      <TravelChat
+                        messages={chatHistory}
+                        onSendMessage={handleSendMessage}
+                        isChatting={isChatting}
+                      />
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 overflow-y-auto">
+                       <AgentConsole logs={logs} isGenerating={isGenerating} />
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </main>
-    </div>
+          )}
+        </main>
+      </div>
+    </APIProvider>
   );
 }
