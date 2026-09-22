@@ -1,6 +1,0 @@
-{
-  "name": "Multi-Agent Travel Planner",
-  "description": "Collaborative travel orchestrator featuring Flight, Hotel, Weather, and Itinerary Planning Agents coordinating via simulated Travel, Weather, and Maps MCP servers.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
