@@ -1,0 +1,648 @@
+[
+  {
+    "id": "HT001",
+    "name": "The Ritz-Carlton, Dubai",
+    "city": "Dubai",
+    "country": "UAE",
+    "star_rating": 5,
+    "price_per_night_usd": 350,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Beach Access",
+      "Gym",
+      "Restaurant",
+      "Free WiFi",
+      "Concierge"
+    ],
+    "guest_rating": 9.2,
+    "room_types": [
+      "Deluxe King",
+      "Ocean Suite",
+      "Presidential Suite"
+    ],
+    "style": [
+      "luxury",
+      "beach",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT002",
+    "name": "Premier Inn Dubai Silicon Oasis",
+    "city": "Dubai",
+    "country": "UAE",
+    "star_rating": 3,
+    "price_per_night_usd": 75,
+    "amenities": [
+      "Free WiFi",
+      "Restaurant",
+      "Parking",
+      "Air Conditioning"
+    ],
+    "guest_rating": 8.1,
+    "room_types": [
+      "Standard Double",
+      "Family Room"
+    ],
+    "style": [
+      "budget",
+      "family"
+    ]
+  },
+  {
+    "id": "HT003",
+    "name": "The Savoy, London",
+    "city": "London",
+    "country": "UK",
+    "star_rating": 5,
+    "price_per_night_usd": 480,
+    "amenities": [
+      "Spa",
+      "Gym",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Concierge",
+      "Theater Desk"
+    ],
+    "guest_rating": 9.4,
+    "room_types": [
+      "Superior Queen",
+      "Deluxe King",
+      "River Suite"
+    ],
+    "style": [
+      "luxury",
+      "historic",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT004",
+    "name": "Hub by Premier Inn Westminster",
+    "city": "London",
+    "country": "UK",
+    "star_rating": 3,
+    "price_per_night_usd": 110,
+    "amenities": [
+      "Free WiFi",
+      "Restaurant",
+      "Air Conditioning"
+    ],
+    "guest_rating": 8.0,
+    "room_types": [
+      "Compact Double",
+      "Standard Double"
+    ],
+    "style": [
+      "budget",
+      "central"
+    ]
+  },
+  {
+    "id": "HT005",
+    "name": "Park Hyatt Tokyo",
+    "city": "Tokyo",
+    "country": "Japan",
+    "star_rating": 5,
+    "price_per_night_usd": 420,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Gym",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "City Views"
+    ],
+    "guest_rating": 9.3,
+    "room_types": [
+      "Park King",
+      "Park Suite",
+      "Diplomat Suite"
+    ],
+    "style": [
+      "luxury",
+      "modern",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT006",
+    "name": "Tokyu Stay Shinjuku",
+    "city": "Tokyo",
+    "country": "Japan",
+    "star_rating": 3,
+    "price_per_night_usd": 85,
+    "amenities": [
+      "Free WiFi",
+      "Laundry",
+      "Kitchenette",
+      "Air Conditioning"
+    ],
+    "guest_rating": 8.3,
+    "room_types": [
+      "Superior Single",
+      "Standard Double",
+      "Twin Room"
+    ],
+    "style": [
+      "budget",
+      "convenient",
+      "solo"
+    ]
+  },
+  {
+    "id": "HT007",
+    "name": "H\u00f4tel Plaza Ath\u00e9n\u00e9e Paris",
+    "city": "Paris",
+    "country": "France",
+    "star_rating": 5,
+    "price_per_night_usd": 550,
+    "amenities": [
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Concierge",
+      "Eiffel Tower Views"
+    ],
+    "guest_rating": 9.5,
+    "room_types": [
+      "Classic Room",
+      "Junior Suite",
+      "Prestige Suite"
+    ],
+    "style": [
+      "luxury",
+      "romantic",
+      "historic"
+    ]
+  },
+  {
+    "id": "HT008",
+    "name": "Ibis Paris Montmartre",
+    "city": "Paris",
+    "country": "France",
+    "star_rating": 3,
+    "price_per_night_usd": 95,
+    "amenities": [
+      "Free WiFi",
+      "Bar",
+      "Air Conditioning"
+    ],
+    "guest_rating": 7.8,
+    "room_types": [
+      "Standard Single",
+      "Standard Double"
+    ],
+    "style": [
+      "budget",
+      "central"
+    ]
+  },
+  {
+    "id": "HT009",
+    "name": "Marina Bay Sands",
+    "city": "Singapore",
+    "country": "Singapore",
+    "star_rating": 5,
+    "price_per_night_usd": 380,
+    "amenities": [
+      "Infinity Pool",
+      "Spa",
+      "Casino",
+      "Restaurant",
+      "Gym",
+      "Free WiFi",
+      "Skypark"
+    ],
+    "guest_rating": 9.1,
+    "room_types": [
+      "Deluxe Room",
+      "Premier Room",
+      "Chairman Suite"
+    ],
+    "style": [
+      "luxury",
+      "modern",
+      "iconic"
+    ]
+  },
+  {
+    "id": "HT010",
+    "name": "YOTEL Singapore",
+    "city": "Singapore",
+    "country": "Singapore",
+    "star_rating": 4,
+    "price_per_night_usd": 120,
+    "amenities": [
+      "Pool",
+      "Gym",
+      "Free WiFi",
+      "Restaurant",
+      "Rooftop Bar"
+    ],
+    "guest_rating": 8.4,
+    "room_types": [
+      "Premium Queen",
+      "VIP Suite",
+      "Family Cabin"
+    ],
+    "style": [
+      "modern",
+      "trendy",
+      "budget"
+    ]
+  },
+  {
+    "id": "HT011",
+    "name": "Steigenberger Frankfurter Hof",
+    "city": "Frankfurt",
+    "country": "Germany",
+    "star_rating": 5,
+    "price_per_night_usd": 280,
+    "amenities": [
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Concierge",
+      "Gym"
+    ],
+    "guest_rating": 9.0,
+    "room_types": [
+      "Superior Room",
+      "Deluxe Suite",
+      "Presidential Suite"
+    ],
+    "style": [
+      "luxury",
+      "classic",
+      "business"
+    ]
+  },
+  {
+    "id": "HT012",
+    "name": "Four Seasons Hotel Istanbul",
+    "city": "Istanbul",
+    "country": "Turkey",
+    "star_rating": 5,
+    "price_per_night_usd": 310,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Bosphorus Views",
+      "Gym"
+    ],
+    "guest_rating": 9.3,
+    "room_types": [
+      "Superior Room",
+      "Deluxe Palace Room",
+      "Sultan Suite"
+    ],
+    "style": [
+      "luxury",
+      "historic",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT013",
+    "name": "Moxy Istanbul Airport",
+    "city": "Istanbul",
+    "country": "Turkey",
+    "star_rating": 3,
+    "price_per_night_usd": 60,
+    "amenities": [
+      "Free WiFi",
+      "Bar",
+      "Gym",
+      "Airport Shuttle"
+    ],
+    "guest_rating": 7.9,
+    "room_types": [
+      "Standard Queen",
+      "Twin Room"
+    ],
+    "style": [
+      "budget",
+      "transit"
+    ]
+  },
+  {
+    "id": "HT014",
+    "name": "InterContinental Sydney",
+    "city": "Sydney",
+    "country": "Australia",
+    "star_rating": 5,
+    "price_per_night_usd": 320,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Harbor Views",
+      "Gym"
+    ],
+    "guest_rating": 9.0,
+    "room_types": [
+      "Classic Room",
+      "Opera Room",
+      "Royal Suite"
+    ],
+    "style": [
+      "luxury",
+      "harbor",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT015",
+    "name": "Ibis Budget Sydney Airport",
+    "city": "Sydney",
+    "country": "Australia",
+    "star_rating": 2,
+    "price_per_night_usd": 70,
+    "amenities": [
+      "Free WiFi",
+      "Parking",
+      "Air Conditioning"
+    ],
+    "guest_rating": 7.2,
+    "room_types": [
+      "Standard Room"
+    ],
+    "style": [
+      "budget",
+      "transit"
+    ]
+  },
+  {
+    "id": "HT016",
+    "name": "Hotel Arts Barcelona",
+    "city": "Barcelona",
+    "country": "Spain",
+    "star_rating": 5,
+    "price_per_night_usd": 340,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Beach",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Gym"
+    ],
+    "guest_rating": 9.1,
+    "room_types": [
+      "Deluxe Room",
+      "Arts Suite",
+      "Penthouse"
+    ],
+    "style": [
+      "luxury",
+      "beach",
+      "modern"
+    ]
+  },
+  {
+    "id": "HT017",
+    "name": "Generator Barcelona",
+    "city": "Barcelona",
+    "country": "Spain",
+    "star_rating": 2,
+    "price_per_night_usd": 45,
+    "amenities": [
+      "Free WiFi",
+      "Bar",
+      "Terrace",
+      "Shared Kitchen"
+    ],
+    "guest_rating": 8.0,
+    "room_types": [
+      "Private Twin",
+      "Private Double",
+      "Dorm Bed"
+    ],
+    "style": [
+      "budget",
+      "backpacker",
+      "social"
+    ]
+  },
+  {
+    "id": "HT018",
+    "name": "Mandarin Oriental, Hong Kong",
+    "city": "Hong Kong",
+    "country": "China",
+    "star_rating": 5,
+    "price_per_night_usd": 400,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Concierge",
+      "Harbor Views"
+    ],
+    "guest_rating": 9.4,
+    "room_types": [
+      "Superior Room",
+      "Harbor Suite",
+      "Presidential Suite"
+    ],
+    "style": [
+      "luxury",
+      "classic",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT019",
+    "name": "W Amsterdam",
+    "city": "Amsterdam",
+    "country": "Netherlands",
+    "star_rating": 5,
+    "price_per_night_usd": 320,
+    "amenities": [
+      "Spa",
+      "Gym",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Canal Views"
+    ],
+    "guest_rating": 8.9,
+    "room_types": [
+      "Wonderful Room",
+      "Spectacular Room",
+      "WOW Suite"
+    ],
+    "style": [
+      "luxury",
+      "trendy",
+      "modern"
+    ]
+  },
+  {
+    "id": "HT020",
+    "name": "Hampshire Hotel Rembrandt",
+    "city": "Amsterdam",
+    "country": "Netherlands",
+    "star_rating": 3,
+    "price_per_night_usd": 100,
+    "amenities": [
+      "Free WiFi",
+      "Bar",
+      "Breakfast"
+    ],
+    "guest_rating": 7.9,
+    "room_types": [
+      "Standard Single",
+      "Standard Double"
+    ],
+    "style": [
+      "budget",
+      "central"
+    ]
+  },
+  {
+    "id": "HT021",
+    "name": "Shangri-La Hotel, Bangkok",
+    "city": "Bangkok",
+    "country": "Thailand",
+    "star_rating": 5,
+    "price_per_night_usd": 180,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "River Views",
+      "Gym"
+    ],
+    "guest_rating": 9.2,
+    "room_types": [
+      "Deluxe Room",
+      "Horizon Club",
+      "Royal Suite"
+    ],
+    "style": [
+      "luxury",
+      "riverside",
+      "romantic"
+    ]
+  },
+  {
+    "id": "HT022",
+    "name": "NapPark Hostel Bangkok",
+    "city": "Bangkok",
+    "country": "Thailand",
+    "star_rating": 2,
+    "price_per_night_usd": 25,
+    "amenities": [
+      "Free WiFi",
+      "Common Area",
+      "Luggage Storage"
+    ],
+    "guest_rating": 8.5,
+    "room_types": [
+      "Dorm Bed",
+      "Private Pod"
+    ],
+    "style": [
+      "budget",
+      "backpacker",
+      "solo"
+    ]
+  },
+  {
+    "id": "HT023",
+    "name": "The Oberoi, New Delhi",
+    "city": "Delhi",
+    "country": "India",
+    "star_rating": 5,
+    "price_per_night_usd": 250,
+    "amenities": [
+      "Pool",
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Concierge",
+      "Gym"
+    ],
+    "guest_rating": 9.3,
+    "room_types": [
+      "Premier Room",
+      "Deluxe Suite",
+      "Kohinoor Suite"
+    ],
+    "style": [
+      "luxury",
+      "classic",
+      "business"
+    ]
+  },
+  {
+    "id": "HT024",
+    "name": "Hotel & Hostel S\u00e3o Paulo",
+    "city": "S\u00e3o Paulo",
+    "country": "Brazil",
+    "star_rating": 3,
+    "price_per_night_usd": 55,
+    "amenities": [
+      "Free WiFi",
+      "Kitchen",
+      "Terrace",
+      "Luggage Storage"
+    ],
+    "guest_rating": 8.0,
+    "room_types": [
+      "Standard Double",
+      "Twin Room",
+      "Dorm Bed"
+    ],
+    "style": [
+      "budget",
+      "social",
+      "central"
+    ]
+  },
+  {
+    "id": "HT025",
+    "name": "Baur au Lac, Zurich",
+    "city": "Zurich",
+    "country": "Switzerland",
+    "star_rating": 5,
+    "price_per_night_usd": 520,
+    "amenities": [
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Free WiFi",
+      "Lake Views",
+      "Gym",
+      "Concierge"
+    ],
+    "guest_rating": 9.5,
+    "room_types": [
+      "Classic Room",
+      "Lake Suite",
+      "Penthouse"
+    ],
+    "style": [
+      "luxury",
+      "lakeside",
+      "romantic"
+    ]
+  }
+]

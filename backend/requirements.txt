@@ -1,0 +1,21 @@
+# Google Agent Development Kit with A2A support
+google-adk[a2a]
+
+# MCP Server framework
+fastmcp
+
+# Backend API
+fastapi
+uvicorn[standard]
+
+# HTTP client for external API calls
+httpx
+
+# Environment variables
+python-dotenv
+
+# Async support
+anyio
+
+# Process management
+psutil
